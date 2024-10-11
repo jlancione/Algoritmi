@@ -10,7 +10,6 @@ double SimpsonRule (double (*F)(double), double a, double b, int N);
 double func(double);
 
 
-
 int main(){
   using namespace std;
   cout << setiosflags(ios::scientific);
