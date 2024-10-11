@@ -1,1 +1,20 @@
+# Ignore Finder folder settings
 .DS_Store
+
+# Ignore datafiles
+*.dat
+
+# Ignore binaries, if you want to be smart: ls folder/ | grep -v .cpp >> .gitignore
+arrays
+arrays_mignone
+count
+operations
+quotient
+welcome
+heron
+precision
+roundoff
+Si_integral.dat
+integral_sin
+quadrature1
+quadrature2
