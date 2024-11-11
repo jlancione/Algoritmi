@@ -4,19 +4,20 @@
 int main(){
   using namespace std;
 
-  float fone = 1.;
-  float fepsilon = 1.;
+  float one_float = 1.;
+  float epsilon = 1.;
 
-  while( (fone + fepsilon) != fone){ fepsilon /= (float)10;}
+  while( (one_float + epsilon) != one_float){ epsilon /= (float)10;}
 
-  cout << "Machine precision (single) = " << fepsilon << endl;
+  cout << "Machine precision (single) = " << epsilon << endl;
 
-  double done = 1.;
-  double depsilon = 1.;
+  double one_double = 1.;
 
-  while( (done + depsilon) != done){ depsilon /= (double)10;}
+  epsilon = 1.;
 
-  cout << "Machine precision (double) = " << depsilon << endl;
+  while( (one_double + epsilon) != one_double){ epsilon /= (double)10;}
+
+  cout << "Machine precision (double) = " << epsilon << endl;
 
   return 0;
 }

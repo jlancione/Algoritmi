@@ -12,8 +12,8 @@ int main() {
   cout << "=================================================" << endl;
   for(int i = 0; i < 7; i++){
     cout << "x = " << x << "; ";
-    cout << "f1 = " << sqrt( x*x + 1) - x << "; ";
-    cout << "f2 = " << (float)1. / ( sqrt( x*x + 1) + x ) << "; ";
+    cout << "f (original)     = " << sqrt( x*x + 1) - x << "; ";
+    cout << "f (rationalized) = " << (float)1. / ( sqrt( x*x + 1) + x ) << "; ";
     cout << "f(taylor) = " << (float).5 / x << endl; 
     x *= 10;
   }
@@ -24,8 +24,8 @@ int main() {
   cout << "=================================================" << endl;
   for(int i = 0; i < 7; i++){
     cout << "x = " << x << "; ";
-    cout << "f1 = " << 1 - cos(x) << "; ";
-    cout << "f2 = " << sin(x) * sin(x) / ( 1 + cos(x) )<< "; ";
+    cout << "f (orginal)      = " << 1 - cos(x) << "; ";
+    cout << "f (rationalized) = " << sin(x) * sin(x) / ( 1 + cos(x) )<< "; ";
     cout << "f(taylor) = " << .5 * x*x << endl; 
     x /= 10;
   }
