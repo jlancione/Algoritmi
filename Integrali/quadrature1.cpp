@@ -17,7 +17,7 @@ int main(){
   double tol = 1e-5;
   double int_old, int_new; 
 
-  cout << setw(14) << "Exact: " << setw(22) << setprecision(14) << 1 - (double)1/exp(1) << endl;
+  cout << setw(14) << "Exact: " << setw(22) << setprecision(14) << 1 - 1./exp(1) << endl;
 
   int n = 4;
   int_old = RectangularRule(func, 0, 1, n);

@@ -13,7 +13,7 @@ int main() {
 
   cout << "Integral of sqrt( 1 + t) between 0 and 3: " << endl;
   cout << setw(9) << "Simpson: " << setw(20) << setprecision(12) << SimpsonRule(func, 0, 3, 2) << endl;
-  cout << setw(9) << "Gauss: " << setw(20) << setprecision(12) <<  GaussRule(func, 0, 3, 1, 3) << endl;
+  cout << setw(9) << "Gauss: " << setw(20) << setprecision(12) <<  GaussRule(func, 0, 3, 18, 3) << endl;
 
   cout << endl;
   cout << "Integral of 1 - x + 2x^2 + x^3 / 2 + x^4 / 4 - x^5 / 8" << endl;
@@ -24,6 +24,7 @@ int main() {
 }
 
 
+// qsto signore qua va ancora testato per N != 1...
 double GaussRule (double (*F)(double), double a, double b, int N, int Ng) {
   /////////////////////////////
   /// a, b are the extremes of the intervals; N is the number of subintervals; Ng is the number of gaussian points per subinterval
@@ -56,30 +57,37 @@ double GaussRule (double (*F)(double), double a, double b, int N, int Ng) {
   }
 
   double sum;
-  double x;      // evaluation point for f
-  double x0;
-  double x1 = a; // to inizialize correctly x1 and x0 in the first subinterval
-  double xsum;   // for optimization in the loops
+  double xeval;      // evaluation point for f
+  double x0, x1; // beginning and end of subinterval
+  double xmean;   // mean point of the subinverval
+  double subsum;
 
   double dx = (double)(b - a) / (double)N;
 
   sum = 0.0;
-  for(int j = 0; j < N; j++) {       // loop over subintervals
-    x0 = x1;
-    x1 = a + dx * (j + 1);
-    xsum = x0 + x1;
+  x0 = a;
+  x1 = a + dx;
+
+  for(int j = 1; j <= N; j++) {       // loop over subintervals
+    xmean = (x0 + x1) / 2.;
+    subsum = 0.0;
 
     for(int i = 0; i < Ng; i++) {    // Apply gaussian rule
-      x = dx * t[i] + xsum;
-      x /= 2.;
-      sum += F(x) * w[i];
+      xeval = (dx * t[i]) / 2.;
+      xeval += xmean;
+      subsum += F(xeval) * w[i];
     }
+    subsum *= dx;
+    subsum /= 2.;
+
+    sum += subsum;
+
+    // update boundaries
+    x0 = x1;
+    x1 = a + (j + 1)*dx;
   }
 
-  sum *= ( b - a) / 2.;
-
   return sum;
-
 }
 
 double SimpsonRule (double (*F)(double), double a, double b, int N){
