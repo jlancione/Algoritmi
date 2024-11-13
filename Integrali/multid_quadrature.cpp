@@ -3,6 +3,8 @@
 #include <iomanip>
 #include "my_integrals.h"
 
+#define NGAUSS    4  // number of points for subinterval (it's the same for integrations x and y)
+
 double Func2D (double x, double y);
 double FFunc1D (double x);
 double GFunc1D (double y);
@@ -20,7 +22,6 @@ int main() {
   double ybeg = -1;
   double yend =  1;
   double sum;
-  int ngauss = 4; // number of points for subinterval (it's the same for x and y)
   int counter = 0;
   g_nint = 1;
 
@@ -29,7 +30,7 @@ int main() {
   double tol = 1.e-5;
   double err = 1.;
   while( err > tol ) {
-    GaussRule (GFunc1D, ybeg, yend, g_nint, ngauss, sum); // Integrate in the y direction
+    GaussRule (GFunc1D, ybeg, yend, g_nint, NGAUSS, sum); // Integrate in the y direction
     err = abs(sum - M_PI) / M_PI;
     cout << err << endl;
     g_nint += 1;
@@ -48,7 +49,7 @@ double GFunc1D (double y) { // Qsta ritorna l'integrale in dx a y fissato (globa
   double  xend =  1;  // Define here the domain
   
   g_ycoord = y; // change the global "y" coordinate, look in FFunc1D(), you see it's fixed 
-  GaussRule (FFunc1D, xbeg, xend, g_nint, ngauss, sum_x); // integrate in the x-direction for fixed y
+  GaussRule (FFunc1D, xbeg, xend, g_nint, NGAUSS, sum_x); // integrate in the x-direction for fixed y
   return sum_x;
 }
 
