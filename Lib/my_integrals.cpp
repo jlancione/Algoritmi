@@ -1,6 +1,5 @@
 // my_integrals.cpp
 #include "my_integrals.h"
-#include <iostream>
 
 #define DEBUG    0
 

@@ -1,14 +1,15 @@
 #ifndef  MY_INTEGRALS
 #define MY_INTEGRALS
 
-int RectangularRule (double (*F)(double), double a, double b, int N, double& sum);
-int TrapezoidalRule (double (*F)(double), double a, double b, int N, double& sum);
-int SimpsonRule (double (*F)(double), double a, double b, int N, double& sum);
-int GaussRule (double (*F)(double), double a, double b, int N, int Ng, double& sum);
+#include <iostream>
 
+int RectangularRule (double (*)(double), double, double, int, double&);
+int TrapezoidalRule (double (*)(double), double, double, int, double&);
+int SimpsonRule (double (*)(double), double, double, int, double&);
+int GaussRule (double (*)(double), double, double, int, int, double&);
 
 
 // UTILITIES
-int sort(double& a, double& b);
+int sort(double&, double&);
 
 #endif // ! MY_INTEGRALS
