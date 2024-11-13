@@ -1,10 +1,13 @@
 # Ignore Finder folder settings
 .DS_Store
 
-# Ignore datafiles
+# Ignore aux files
 *.dat
+*.o
+makefile
 
-# Ignore binaries, if you want to be smart: ls folder/ | grep -v .cpp >> .gitignore
+# Ignore binaries, if you want to be smart: 
+# ls folder/ | grep -v .cpp >> .gitignore
 arrays
 arrays_mignone
 count
@@ -18,3 +21,9 @@ Si_integral.dat
 integral_sin
 quadrature1
 quadrature2
+multid_quadrature
+gaussian
+guess
+pi
+prn_uniformity
+random
