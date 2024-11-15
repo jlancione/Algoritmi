@@ -4,10 +4,16 @@
 #include <iostream>
 #include <iomanip>
 
-int Bisection (double (*)(double), double, double, double, double&, int&);
-int FalsePos (double (*)(double), double, double, double, double &, int &);
-int Secant (double (*)(double), double, double, double, double &, int &);
-int Newton (double (*)(double), double (*)(double), double, double, double, double &, int &);
+#define TRUE     1
+#define FALSE    0
+
+#define DEBUG    FALSE
+#define MAX_ITERATIONS    128
+
+int Bisection (double (*)(double), double, double, double, double, double&, int&);
+int FalsePos (double (*)(double), double, double, double, double, double &, int &);
+int Secant (double (*)(double), double, double, double, double, double &, int &);
+int Newton (double (*)(double), double (*)(double),double, double, double, double, double &, int &);
 
 // Utilities
 int sort(double&, double&);
