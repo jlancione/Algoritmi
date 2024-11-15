@@ -386,3 +386,49 @@ int sort(double& a, double& b) {
     return 1;
   }
 }
+
+int Bracket (double (*func)(double), double a, double b,
+             int N, double xL[], double xR[]) {
+  ///////////////////////////////////////////////////////////////////
+  /// The algorithm finds candidate intervals where to search for 0s,
+  /// it checks the sign of the f at the boundaries of each subint
+  ///
+  /// func  [in]   function to bracket
+  /// a     [in]   beginning of the interval
+  /// b     [in]   end of the interval
+  /// N     [in]   number of subintervals
+  /// xL    [out]  left boundaries of candidate subints (static array)
+  /// xR    [out]  right boundaries of candidate subints (static array)
+  ///
+  /// returns the number of intervals candidate to contain roots
+  ///////////////////////////////////////////////////////////////////
+  double dx;
+  double xbeg, xend;
+  double fbeg, fend;
+
+  int counter = 0; // Counter for 0s
+
+  // Initialization
+    dx = abs( b - a ) / (double)N;
+    xbeg = a;
+    fbeg = func(a);
+
+  int i;
+  for (i = 0; i<N; i++) {
+    xend = a + ( i+1 )*dx;
+    fend = func(xend);
+
+    if ( fbeg*fend <= 0 ) {
+      xL[counter] = xbeg;
+      xR[counter] = xend;
+      counter ++;
+    }
+
+    // Update for next iteration
+      xbeg = xend;
+      fbeg = fend;
+  }
+  return counter;
+}
+
+
