@@ -1,177 +1,94 @@
 #include <iostream>
 #include <cmath>
 #include <iomanip>
+#include <fstream>
+#include "my_rootfinders.h"
 
-int Bisection (double (*func)(double), double a, double b, double tol, double &zero, int &iter);
-int Bracket ( double (*func)(double), double a, double b, int N, double xL[], double xR[]);
+double LegPol (double, int);
+double LegPol_wrap (double);
+double deLegPol (double);
 
-double LegPol (double x, int n);
-double deLegPol (double x, int n);
-double Leg_wrapper (double x);
-double deLeg_wrapper (double x);
+#define NPOL    5
 
-int N = 2;
-
-// qua nn siamo riusciti a combinare nulla, purtroppo, nel senso che è praticamente scritto ma nn funziona una mazza
-// boia
 int main () {
   using namespace std;
 
-  double w[N];
-  double deLeg;
+  // For bracketing
+    int zero_counter;
+    double xL[NPOL], xR[NPOL];
+    int nsearch = NPOL*20 + 3;
    
-  double tol = 1.e-6;
-  int iter = 0;
+  double denominator; 
+  double w[NPOL];
+  double deLeg;
 
-  int zero_counter;
-  double xL[N], xR[N];
-  
-//cout << LegPol(2, 4) << endl;
-  int Nr = N*20 + 3;
-  zero_counter = Bracket(Leg_wrapper, -1., 1., Nr, xL, xR);
+  zero_counter = Bracket(LegPol_wrap, -1., 1., nsearch, xL, xR);
+  cout << "number of 0s = " << zero_counter << endl;
 
-  double zero[zero_counter];
-  double den; // auxiliary for computations
+  // For root finding 
+    double tol = 1.e-6;
+    int iter;
+    double zero[zero_counter];
 
+  cout << "For n = " << NPOL << ":" << endl;
   for (int i=0; i < zero_counter; i++) {
-    zero[i] = Bisection(deLeg_wrapper, -1, 1, tol, zero[i], iter);
-    cout << "Found zero in: (" << xL[i] << ", " << xR[i] << "); zero at " << zero[i] << endl;
-//
-//  // Weights computation
-//    deLeg = deLegPol(zero[i], N);
-//    den = (1 - zero[i]) * (1 - zero[i]) * deleg * deleg;
-//    w[i] = 2. / den;
-//  cout << "For n = " << N << ":" << endl;
-//  cout << i << ". zero at " << zero[i] << "; weight = " << w[i] << endl;
+    Newton(LegPol_wrap, deLegPol, xL[i], xR[i], tol, tol, zero[i], iter);
+  
+    cout << "Found zero in (" << xL[i] << ", " << xR[i] << ")" << endl;
+  
+    // Weights computation
+      deLeg = deLegPol(zero[i]);
+      denominator = (1. - zero[i] * zero[i]) * deLeg * deLeg;
+      w[i] = 2. / denominator;
+  
+    cout << i << ". zero at " << zero[i] << "; weight = " << w[i] << endl;
   }
+
+  // Plotting the pol
+//ofstream fdata;
+//fdata.open("legpol.dat");
+//
+//for(double x = -1.; x < 1.; x+= .1){
+//  fdata << x << " " << LegPol_wrap(x) << endl;
+//}
+//fdata.close();
+
   return 0;
 }
 
 
-
 double LegPol (double x, int n) {
-  double pj, pk, pl;
+  double p0, p1, p2;
 
-  pj = 1; // P_0
-  pk = x; // P_1
+  // Initialization
+    p0 = 1.; // P_0
+    p1 = x; // P_1
 
   for (int i=1; i <= n; i++) {
     if ( i == n) break;
 
-    pl = (2*i + 1) * pk - i * pj;
-    pl /= (i+1);
+    p2 = (2*i + 1)* x * p1 - i * p0;
+    p2 /= (i+1);
 
     // Update the recursion
-      pj = pk;
-      pk = pl;
+      p0 = p1;
+      p1 = p2;
   }
-
-  return pk;
+  return p1;
 }
 
-double deLegPol (double x, int n) { // this requires the degree of the pol to be defined as a global variable
-
-  double pj, pk, depl;
-
-  pj = LegPol(x, n-1);
-  pk = LegPol(x, n);
-  depl = x * pk - pj;
-  depl *= n;
-  depl /= (x*x - 1);
-
-  return depl;
+double LegPol_wrap (double x) {
+  return LegPol(x, NPOL);
 }
 
+double deLegPol (double x) {
+  double p0, p1, dpol;
 
+  p0 = LegPol(x, NPOL-1);
+  p1 = LegPol(x, NPOL);
+  dpol = x * p1 - p0;
+  dpol *= NPOL;
+  dpol /= (x*x - 1);
 
-// l'obiettivo è di ritornare i sottointervalli in cui c'è uno zero - SEPARA I TASK!!
-int Bracket ( double (*func)(double), double a, double b, int N, double xL[], double xR[]) {
-  double dx;
-  double xbeg, xend;
-  double fbeg, fend;
-
-  int counter = 0; // counter for zeros
-
-  dx = abs( b - a ) / (double)N;
-  xend = a;
-  fend = func(a);
-
-  for (int i = 0; i<N; i++) {
-    xbeg = xend;
-    xend = xbeg + dx;
-    //  xbeg = a + i*dx;
-    //  xend = a + (i+1)*dx;
-    fbeg = fend;
-
-    fend = func(xend);
-
-    if ( fbeg*fend <= 0) {
-      xL[counter] = xbeg;
-      xR[counter] = xend;
-
-      counter ++;
-    } else {
-      continue;
-    }
-  }
-  return counter;
-}
-
-
-int Bisection (double (*func)(double), double a, double b, double tol, double &zero, int &iter) {
-  // bisogna metterci tutti i controlli, del tipo se ti esce nan e se la funzione ha gli estremi dlo stso segno sl'intervallo, cose così, intervallo rovesciato
-  using namespace std;
-  cout << setiosflags(ios::scientific);
-
-  // Checks
-  if ( a > b ) cout << "Warning: interval reversed, left boundary > right boundary. Proceding nonetheless...";
-
-  int k; // Iteration Indx
-  double xbeg, xend, xc;
-  double fbeg, fend;
-  double delta = 1; // Relative Error
-
-  xbeg = a;
-  xend = b;
-  fbeg = func(xbeg);
-  fend = func(xend);
-
-  // per ottimizzare mi basta ricordarmi dl valore calcolato dla funz nl'estremo che tengo
-  for (k = 0; delta >= tol; k++) {
-    xc = (xbeg + xend) * .5;
-
-    if (fbeg*fend < 0) {
-      xend = xc;
-    }
-    else if (fbeg*fend > 0) {
-      xbeg = xc;
-    }
-    else {
-      if (fbeg==0) {
-        zero = xbeg;
-        return 0;
-      }
-      else if (fend==0) {
-        zero = xend;
-        return 0;
-      }
-    }
-    delta *= .5;
-
-#if DEBUG == TRUE
-    //    cout << "Bisection(): k = " << k << "; [a,b] = [" << xbeg << ", " << xend << "]; xm = " << xc << "; dx = " << delta << "; fm = " << func(xc) << endl;
-#endif
-  }
-
-  zero = xc;
-
-  return 0;
-}
-
-double Leg_wrapper (double x) {
-  return LegPol(x, N);
-}
-
-double deLeg_wrapper (double x) {
-  return deLegPol(x, N);
+  return dpol;
 }
