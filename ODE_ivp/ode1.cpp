@@ -91,8 +91,8 @@ int main() {
   for(stepindx = 0; stepindx <= nsteps; stepindx++){
     t = stepindx*dt;
     // At every iteration every method computes Y_n+1 using t_n
-    // so first I have to print everything then update them both,
-    // Y with EulerStep and t with the loop
+    // first I have to print everything then update them both,
+    // Y with <Method>Step and t with the loop
     AnaliticSol(t, Y_analit);
     cout << setw(4) << stepindx << ". " << t << "  ";
 
@@ -120,27 +120,6 @@ int main() {
       RK4Step(t, Y, dYdt, dt, NEQ);
     #endif
 
-/*
-    if(stepindx==nsteps) { // To see the last update
-      stepindx++;
-      t = stepindx*dt;
-      cout << setw(4) << stepindx << ". " << t << "  ";
-      for(eqindx=0; eqindx < NEQ; eqindx++){
-        abs_err = abs(Y_analit[eqindx] - Y[eqindx]);
-        rel_err = abs_err / Y_analit[eqindx];
-
-        if(eqindx!=0) cout << setw(20) << "";
-        cout << eqindx << ". "
-             << setw(13) << setprecision(6) << Y[eqindx] << "  ";
-        #if DEBUG == 1
-        cout << setw(13) << setprecision(6) << Y_analit[eqindx] << "  ";
-        #endif
-        cout << setw(13) << setprecision(6) << abs_err << "  "
-             << setw(13) << setprecision(6) << rel_err << "  "
-             << endl;
-      }
-    }
-    */
     #if PROBLEM == 2
       energy = Y[0]*Y[0] + Y[1]*Y[1];
       fdata << t*.5*M_1_PI << " " << energy << endl;
