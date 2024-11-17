@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+#define TRUE    1
+#define FALSE   0
+
 void EulerStep (double, double *, void(*)(double, double *, double *),
                 double, int);
 void RK2Step (double, double *, void(*)(double, double *, double *),
