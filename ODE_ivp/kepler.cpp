@@ -4,7 +4,7 @@
 #include <fstream>
 #include "my_odesolvers.h"
 
-#define NTURN_POINTS    2
+#define NTURN_POINTS    3
 #define ORBIT_DEBUG    FALSE
 
 void RHS(double, double *, double *);
@@ -22,7 +22,7 @@ int main() {
   x0 = 4.;
   y0 = 0.;
   vx0 = 0.;
-  alpha = 0.3;  // for alpha < 2 the orbit should close,
+  alpha = 0.8;  // for alpha < 2 the orbit should close,
   // but with alpha < .5 (approx) it doesn't really... is it the algorithm?
   // Yeah, with RK2 or Euler it gets awful...
   vy0 = sqrt(alpha/x0);
@@ -40,7 +40,7 @@ int main() {
 //while (t < 150.){
   while (nturn_points < NTURN_POINTS) {
     v_x = Y[2]; // store in memory the v_x from the previous step
-    EulerStep(t, Y, RHS, dt, neq);
+    RK4Step(t, Y, RHS, dt, neq);
 
     if (v_x*Y[2] <= 0.) { // Turning point condition as a zero crossing
       nturn_points += 1;
