@@ -1,7 +1,7 @@
 // my_integrals.cpp
 #include "my_integrals.h"
 
-#define DEBUG    0
+#define DEBUG    FALSE
 
 
 int RectangularRule (double (*F)(double), double a, double b, int N, double& sum){ 
@@ -20,12 +20,6 @@ int RectangularRule (double (*F)(double), double a, double b, int N, double& sum
 
   using namespace std;
 
-  if (sort(a,b)) {
-    cout << "! (RectangularRule) The boundaries are in the wrong order. "; 
-    cout << endl;
-    cout << "Proceeding nonetheless...";
-    cout << endl;
-  }
   double dx;
 
   //Initialization
@@ -55,17 +49,10 @@ int TrapezoidalRule (double (*F)(double), double a, double b, int N, double& sum
 
   using namespace std;
 
-  if (sort(a,b)) {
-    cout << "! (TrapezoidalRule) The boundaries are in the wrong order. "; 
-    cout << endl;
-    cout << "Proceeding nonetheless...";
-    cout << endl;
-  }
-
   double h = ( b - a)/(double)N;
   sum = 0;
 
-  sum += ( F(a) + F(b)) / (double) 2;
+  sum += ( F(a) + F(b)) / 2.;
   for(int i=1; i < N; i++){
    sum += F(a + h*i); 
   }
@@ -91,13 +78,6 @@ int SimpsonRule (double (*F)(double), double a, double b, int N, double& sum){
 
   using namespace std;
 
-  if (sort(a,b)) {
-    cout << "! (SimpsonRule) The boundaries are in the wrong order. "; 
-    cout << endl;
-    cout << "Proceeding nonetheless...";
-    cout << endl;
-  }
-
   if (N % 2 == 1) {
     cout << "! (SimpsonRule) The number of intervals must be even" << endl;
     cout << "Proceeding nonetheless (+1)...";
@@ -116,7 +96,7 @@ int SimpsonRule (double (*F)(double), double a, double b, int N, double& sum){
 
   sum += F(a) + F(b);
   sum *= h;
-  sum /= (double) 3;
+  sum /= 3.;
 
   return 0;
 }
@@ -137,13 +117,6 @@ int GaussRule (double (*F)(double), double a, double b, int N, int Ng, double& s
 
   using namespace std;
   double w[32]; double x[32];    // initialized statically -> maximum capacity for the function
-
-  if (sort(a,b)) {
-    cout << "! (GaussRule) The boundaries are in the wrong order. "; 
-    cout << endl;
-    cout << "Proceeding nonetheless...";
-    cout << endl;
-  }
 
   if (Ng == 1) {
     x[0] = 0.;            w[0] = 2.;
@@ -216,25 +189,4 @@ int GaussRule (double (*F)(double), double a, double b, int N, int Ng, double& s
   }
 
   return 0;
-}
-
-
-
-
-// UTILITIES
-
-int sort(double& a, double& b) {
-  ///////////////////////////////////////////////////////////////////
-  /// if a < b return 0, else it swaps them in place and returns 1
-  ///////////////////////////////////////////////////////////////////
-
-  double t;
-  if (a < b){
-    return 0;
-  } else {
-    t = a;
-    a = b;
-    b = t;
-    return 1;
-  }
 }

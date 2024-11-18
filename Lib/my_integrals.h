@@ -1,6 +1,9 @@
 #ifndef  MY_INTEGRALS
 #define MY_INTEGRALS
 
+#define TRUE    1
+#define FALSE   0
+
 #include <iostream>
 
 int RectangularRule (double (*)(double), double, double, int, double&);
