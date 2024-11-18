@@ -97,15 +97,45 @@ void PosVerletStep (double *x, double *v, void (*Acceleration)(double*, double *
   int k;
   double acc[NEQ_MAX];
 
-  for(k = 0; k < npos; k ++) { // Loop on positions
-    x[k] += .5*h * v[k]; // Update positions (half step)
+  for(k = 0; k < npos; k ++) {
+    x[k] += .5*h * v[k]; // Update positions (half step) [drift]
   }
   Acceleration(x, acc);
-  for(k = 0; k < npos; k ++) { // Loop on velocities
-    v[k] += h * acc[k]; // Update velocities (full step)
+  for(k = 0; k < npos; k ++) {
+    v[k] += h * acc[k]; // Update velocities (full step) [kick]
   }
-  for(k = 0; k < npos; k ++) { // Loop on positions
-    x[k] += .5*h * v[k]; // Update positions (full step)
+  for(k = 0; k < npos; k ++) {
+    x[k] += .5*h * v[k]; // Update positions (full step) [drift]
   }
 }
 
+void VelVerletStep (double *x, double *v, void (*Acceleration)(double*, double*), 
+                    double *a, double h, int npos) {
+  ///////////////////////////////////////////////////////////////////
+  /// Computes a step with Velocity VERLET rule (Simplectic)
+  /// Thought to solve Newton's equation,
+  /// it is time reversible and conserves energy
+  /// 2nd Order accurate (h^3 local error) 
+  /// 1 acceleration evaluation per interval, single step method
+  ///
+  /// t             [in]      t_n starting time of the step
+  /// Y             [in/out]  (in) solution at t_n, (out) sol at t_n+1
+  /// Acceleration  [in]      right hand side, ie dYdt (pointer to func)
+  /// a             [in/out]  (in) accel at t_n, (out) accel at t_n+1
+  /// h             [in]      time step (CONSTANT! for it to be 2nd order)
+  /// npos          [in]      lenght of x and v
+  ///////////////////////////////////////////////////////////////////
+  int k;
+
+  // a needs to be initialised in the main!
+  for(k = 0; k < npos; k ++) {
+    v[k] += .5*h * a[k]; // Update velocities (half step) [kick]
+  }
+  for(k = 0; k < npos; k ++) {
+    x[k] += h * v[k]; // Update positions (full step) [drift]
+  }
+  Acceleration(x, a);
+  for(k = 0; k < npos; k ++) {
+    v[k] += .5*h * a[k]; // Update velocities (half step) [kick]
+  }
+}

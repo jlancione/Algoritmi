@@ -13,7 +13,9 @@ void RK2Step (double, double *, void(*)(double, double *, double *),
 void RK4Step (double, double *, void(*)(double, double *, double *),
               double, int);
 void PosVerletStep (double *, double *, void (*)(double*, double *),
-                double, int);
+                    double, int);
+void VelVerletStep (double *, double *, void (*)(double*, double *),
+                    double *, double, int);
 
 
 #endif // ! MY_ODESOLVERS
