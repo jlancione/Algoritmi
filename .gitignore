@@ -6,6 +6,9 @@
 *.o
 makefile
 
+# Pollo
+CA1_nn_dimenticare/
+
 # Ignore binaries, if you want to be smart: 
 # ls folder/ | grep -v .cpp >> .gitignore
 arrays
@@ -37,3 +40,4 @@ ode1
 ode2
 kepler
 harmonic
+poisson
