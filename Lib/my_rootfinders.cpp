@@ -31,6 +31,7 @@ int Bisection (double (*func)(double), double a, double b,
   double xbeg, xend, xc;
   double fbeg, fend, fc;
   double delta = 1.; // Relative Error
+//double delta = abs(a - b); // Absolute Error
 
   // Initialization
     xbeg = a;
@@ -40,7 +41,7 @@ int Bisection (double (*func)(double), double a, double b,
     iter = 0;
 
   if ( fbeg*fend > 0.) {
-    cout << "! (Bisection) f(a) * f(b) > 0, the algorithm can't proceed";
+    cout << "! (Bisection) f(a) * f(b) > 0, the algorithm cannot proceed";
     cout << endl;
     return 2;
 
@@ -65,7 +66,6 @@ int Bisection (double (*func)(double), double a, double b,
     #endif
 
     // Update for next iteration (Bisection rule)
-      delta *= .5;
       if (fbeg*fc < 0) {
         xend = xc;
         fend = fc;
