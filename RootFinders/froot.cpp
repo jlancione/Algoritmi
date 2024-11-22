@@ -5,8 +5,8 @@
 
 #define TEST    1
 
-double Func (double x);
-double deFunc (double x);
+double Func (double);
+double deFunc (double);
 
 int main() {
   using namespace std;
