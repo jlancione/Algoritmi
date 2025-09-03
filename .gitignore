@@ -4,10 +4,14 @@
 # Ignore aux files
 *.dat
 *.o
+*.gif
 makefile
 
 # Pollo
 CA1_nn_dimenticare/
+
+# gPLUTO
+gPluto
 
 # Ignore binaries, if you want to be smart: 
 # ls folder/ | grep -v .cpp >> .gitignore
@@ -43,3 +47,4 @@ harmonic
 poisson
 wave
 qho
+double_pendulum

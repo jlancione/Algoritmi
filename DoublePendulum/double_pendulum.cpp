@@ -5,7 +5,8 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
-// #include "my_odesolvers.h"
+#include <fstream>
+#include "my_odesolvers.h"
 
 
 // g / L
@@ -20,40 +21,38 @@ int main () {
 
   // initialize
   double theta[NEQ*2];
-  // angoli in radianti?
-  theta[0] = ;  // theta1
-  theta[1] = ;  // theta2
+
+  theta[0] = M_PI_4;  // theta1 (rad)
+  theta[1] = M_PI_4+.3;  // theta2 (rad)
   theta[2] = 0.0 ;  // dtheta1
   theta[3] = 0.0 ;  // dtheta2
 
   // time step size
   double tmax, tmin, dt, t ;
-  int nsteps = 200;
-  tmax = 20.0;
+  tmax = 3.0;
   tmin = 0.0;
-  dt = (tmax - tmin) / (double)nsteps;
-  cout << "dt = " << dt << endl;
+  dt = 0.01;
+  int nsteps = (tmax-tmin)/dt;
+  cout << "nsteps = " << nsteps << endl;
 
-  // set initial values
-
-  // error tracking
-
-  
-  // ofstream fdata;
-  // fdata.open("double_pendulum.dat");
+  ofstream fdata;
+  fdata.open("double_pendulum.dat");
 
   int stepindx, eqindx;
 
+  double x,y;
   for(stepindx = 0; stepindx <= nsteps; stepindx++) {
     t = stepindx*dt;
 
-    for(eqindx=0; eqindx < NEQ; eqindx++) {
-      // error computation
-    }
-    RK4Step(t, theta, dYdt, NEQ);
+    RK4Step(t, theta, dYdt, dt, NEQ);
 
-    // write on disk
-    fdata << t << " " << theta[0] << " " << theta[2] << endl;
+    // Write on disk
+    x = sin(theta[0]); // Cartesian coord
+    y = -cos(theta[0]);
+    fdata << t << " " << x << " " << y;
+    x += sin(theta[1]);
+    y += -cos(theta[1]);
+    fdata << " " << x << " " << y << endl;
 
   }
 
@@ -67,7 +66,7 @@ void dYdt ( double t, double *theta, double *R ) {
   double num, denom ;
 
   num = GL* 3. * sin(theta[0]) - GL*sin(theta[0]- 2.*theta[1]) - 2.*sin(theta[0]-theta[1])* (theta[3]*theta[3] + theta[2]*theta[2]*cos(theta[0]-theta[1])) ;
-  denom = 3. - cos(2.(*theta[0] - theta[1]));
+  denom = 3. - cos(2.*(theta[0] - theta[1]));
   R[0] = theta[2];
   R[2] = num / denom;
 
@@ -75,11 +74,5 @@ void dYdt ( double t, double *theta, double *R ) {
   denom = 3 - cos(2*(theta[0] - theta[1])) ;
   R[1] = theta[3];
   R[3] = num / denom;
-
-
-  // Video su gnuplot
-  // produrre il file con i .i dla simulazione
-
-
 
 }
