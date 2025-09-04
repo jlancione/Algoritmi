@@ -46,13 +46,13 @@ int main () {
   #endif
 
   int stepindx, eqindx;
-  double E;
 
-  double x,y;
+  int cnt = 0;   // auxiliary counter for flips
+  int flipcnt=0, flipflag=1;
+
+  double x, x0, y, E;
   for(stepindx = 0; stepindx <= nsteps; stepindx++) {
     t = stepindx*dt;
-
-    RK4Step(t, theta, dYdt, dt, NEQ);
 
     // Write on disk
     x = sin(theta[0]); // Cartesian coord
@@ -61,13 +61,30 @@ int main () {
     E += theta[2]*theta[2]; // kinetic energy
     fdata << t << " " << x << " " << y;
 
+    // Flip check
+    if ( y>0 && x*x0<0 ) {
+      flipflag *= -1;
+      if ( cnt>10 && flipflag<0 ) {
+        flipcnt += 1;
+        flipflag = 1;
+        cnt = 0;
+      }
+    }
+    else cnt += 1;
+
+    x0 = x;
+
+    // Finish writing on disk
     x += sin(theta[1]);
     y += -cos(theta[1]);
     E += y*y*G;             // potential energy 2 pendulum
     E += theta[3]*theta[3]; // kinetic energy
     fdata << " " << x << " " << y << " " << E << endl;
 
+    RK4Step(t, theta, dYdt, dt, NEQ);
+
   }
+  cout << "Number of flips = " << flipcnt << endl;
 
   fdata.close();
 
