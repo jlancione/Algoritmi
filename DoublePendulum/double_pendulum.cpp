@@ -11,7 +11,7 @@
 
 // g / L
 #define GL  9.81
-#define NEQ  2
+#define NEQ  4
 
 void dYdt ( double t, double *theta, double *R );
 
@@ -20,16 +20,16 @@ int main () {
   cout << setiosflags(ios::scientific);
 
   // initialize
-  double theta[NEQ*2];
+  double theta[NEQ];
 
-  theta[0] = M_PI_4;  // theta1 (rad)
-  theta[1] = M_PI_4+.3;  // theta2 (rad)
+  theta[0] = M_PI_2;  // theta1 (rad)
+  theta[1] = M_PI_2;  // theta2 (rad)
   theta[2] = 0.0 ;  // dtheta1
   theta[3] = 0.0 ;  // dtheta2
 
   // time step size
   double tmax, tmin, dt, t ;
-  tmax = 3.0;
+  tmax = 6.0;
   tmin = 0.0;
   dt = 0.01;
   int nsteps = (tmax-tmin)/dt;
@@ -65,12 +65,12 @@ void dYdt ( double t, double *theta, double *R ) {
   // m1 = m2
   double num, denom ;
 
-  num = GL* 3. * sin(theta[0]) - GL*sin(theta[0]- 2.*theta[1]) - 2.*sin(theta[0]-theta[1])* (theta[3]*theta[3] + theta[2]*theta[2]*cos(theta[0]-theta[1])) ;
-  denom = 3. - cos(2.*(theta[0] - theta[1]));
+  num = -GL* 3. * sin(theta[0]) - GL*sin(theta[0]- 2.*theta[1]) - 2.*sin(theta[0]-theta[1]) * (theta[3]*theta[3] + theta[2]*theta[2]*cos(theta[0]-theta[1])) ;
+  denom = 3. - cos( 2.*(theta[0] - theta[1]) );
   R[0] = theta[2];
   R[2] = num / denom;
 
-  num = sin(theta[0] -theta[1])*(2*theta[2]*theta[2] + 2*GL* cos(theta[0]) + theta[3]*theta[4]* cos(theta[0] - theta[1])) ;
+  num = 2*sin(theta[0] -theta[1])*( 2*theta[2]*theta[2] + 2*GL*cos(theta[0]) + theta[3]*theta[3]*cos(theta[0] - theta[1]) ) ;
   denom = 3 - cos(2*(theta[0] - theta[1])) ;
   R[1] = theta[3];
   R[3] = num / denom;
