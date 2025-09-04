@@ -4,35 +4,37 @@ set xrange [-2.5:2.5] # Always a good idea to
 set yrange [-2.5:2.5] # fix the axis range
 
 set pointsize 3        # symbol size
-set style line 2 pt 0  # circle specifications to be used for bob 1
+set style line 1 lc rgb '#BB00FF'  # circle specifications to be used for bob 1
+set style line 2 lc rgb '#00FF80'  # circle specifications to be used for bob 1
 
-#ntail = 100  # number of points to draw in the tail
+ntail = 100  # number of points to draw in the tail
 ninc = 3    # increment between frames, it's the stepsize in for cycle
 npoints = 4000
 
-array A1[npoints]  # x of first bob
-array A2[npoints]  # x of second bob
-array B1[npoints]  # y of first bob
-array B2[npoints]  # y of second bob
+array A1[npoints+1]  # x of first bob
+array A2[npoints+1]  # x of second bob
+array B1[npoints+1]  # y of first bob
+array B2[npoints+1]  # y of second bob
 
 set term unknown # to store the points in the arrays, without plotting anything
 do for [ii=1:npoints:ninc] {
   plot 'double_pendulum.dat' using (A1[ii]=column(2)):(B1[ii]=column(3)) every ::ii::ii, \
        'double_pendulum.dat' using (A2[ii]=column(4)):(B2[ii]=column(5)) every ::ii::ii
+  plot 'double_pendulum1.dat' using (A1[ii+1]=column(2)):(B1[ii+1]=column(3)) every ::ii::ii, \
+       'double_pendulum1.dat' using (A2[ii+1]=column(4)):(B2[ii+1]=column(5)) every ::ii::ii
 }
 
 # Set up GIF
 set term gif animate delay 2 size 850,850
 set output 'dp_trajectory.gif'
 
-# Add the hinge in the center as a black filled circle
+# Add hinge in the center as a black filled circle
 set object 1 circle at 0,0 size scr 0.01 \
 fillstyle solid fillcolor rgb 'black’
 
-# Add the bobs
+# FIRST double pendulum
 set object 2 circle at A1[1],B1[1] front size scr 0.02 \
  fillstyle solid fillcolor rgb '#0000FF’ 
-
 set object 3 circle at A2[1],B2[1] front size scr 0.02 \
  fillstyle solid fillcolor rgb '#FF0000’
 
@@ -40,20 +42,37 @@ set object 3 circle at A2[1],B2[1] front size scr 0.02 \
 set arrow 1 nohead lw 2 from 0,0 to A1[1],B1[1] back
 set arrow 2 nohead lw 2 from A1[1],B1[1] to A2[1],B2[1] back
 
+# SECOND double pendulum
+set object 4 circle at A1[2],B1[2] front size scr 0.02 \
+ fillstyle solid fillcolor rgb '#FFFF00’ 
+set object 5 circle at A2[2],B2[2] front size scr 0.02 \
+ fillstyle solid fillcolor rgb '#00FF00’
+
+# Add the ropes
+set arrow 3 nohead lw 2 from 0,0 to A1[2],B1[2] back
+set arrow 4 nohead lw 2 from A1[2],B1[2] to A2[2],B2[2] back
+
 # Build frames
  do for [ii=1:npoints:ninc] {
-  #im = ((ii - ntail) < 0 ? 1:ii-ntail)  # fix boundary issue with tail points
+  im = ((ii - ntail) < 0 ? 1:ii-ntail)  # fix boundary issue with tail points
   title = sprintf ("Step = %d",ii)      # Track time steps in the title
   set title title
 
   # Update arrow and bobs positions
   set object 2 circle at A1[ii],B1[ii]
   set object 3 circle at A2[ii],B2[ii]
-
   set arrow 1 from 0,0 to A1[ii],B1[ii]
   set arrow 2 from A1[ii],B1[ii] to A2[ii],B2[ii]
 
-  plot 'double_pendulum.dat' using 4:5 every ::0::ii with lines lt 1 notitle
+  # Update arrow and bobs positions
+  set object 4 circle at A1[ii+1],B1[ii+1]
+  set object 5 circle at A2[ii+1],B2[ii+1]
+  set arrow 3 from 0,0 to A1[ii+1],B1[ii+1]
+  set arrow 4 from A1[ii+1],B1[ii+1] to A2[ii+1],B2[ii+1]
+
+  plot 'double_pendulum.dat' using 4:5 every ::im::ii with lines linestyle 1 notitle, \
+       'double_pendulum1.dat' using 4:5 every ::im::ii with lines linestyle 2 notitle
+      
 }
 
 

@@ -8,10 +8,12 @@
 #include <fstream>
 #include "my_odesolvers.h"
 
-
 // g / L
 #define GL  9.81
+#define G   9.81
 #define NEQ  4
+
+#define PENDULUM 0
 
 void dYdt ( double t, double *theta, double *R );
 
@@ -22,8 +24,8 @@ int main () {
   // initialize
   double theta[NEQ];
 
-  theta[0] = M_PI_2+M_PI_4;  // theta1 (rad)
-  theta[1] = M_PI_2;  // theta2 (rad)
+  theta[0] = M_PI-M_PI_4;  // theta1 (rad)
+  theta[1] = M_PI;  // theta2 (rad)
   theta[2] = 0.0 ;  // dtheta1
   theta[3] = 0.0 ;  // dtheta2
 
@@ -36,9 +38,15 @@ int main () {
   cout << "nsteps = " << nsteps << endl;
 
   ofstream fdata;
-  fdata.open("double_pendulum.dat");
+  #if PENDULUM == 0
+    fdata.open("double_pendulum.dat");
+  #endif
+  #if PENDULUM == 1
+    fdata.open("double_pendulum1.dat");
+  #endif
 
   int stepindx, eqindx;
+  double E;
 
   double x,y;
   for(stepindx = 0; stepindx <= nsteps; stepindx++) {
@@ -49,10 +57,15 @@ int main () {
     // Write on disk
     x = sin(theta[0]); // Cartesian coord
     y = -cos(theta[0]);
+    E = y*y*G;              // potential energy 1st pendulum
+    E += theta[2]*theta[2]; // kinetic energy
     fdata << t << " " << x << " " << y;
+
     x += sin(theta[1]);
     y += -cos(theta[1]);
-    fdata << " " << x << " " << y << endl;
+    E += y*y*G;             // potential energy 2 pendulum
+    E += theta[3]*theta[3]; // kinetic energy
+    fdata << " " << x << " " << y << " " << E << endl;
 
   }
 
