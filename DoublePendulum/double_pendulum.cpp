@@ -22,14 +22,14 @@ int main () {
   // initialize
   double theta[NEQ];
 
-  theta[0] = M_PI_2;  // theta1 (rad)
+  theta[0] = M_PI_2+M_PI_4;  // theta1 (rad)
   theta[1] = M_PI_2;  // theta2 (rad)
   theta[2] = 0.0 ;  // dtheta1
   theta[3] = 0.0 ;  // dtheta2
 
   // time step size
   double tmax, tmin, dt, t ;
-  tmax = 6.0;
+  tmax = 40.0;
   tmin = 0.0;
   dt = 0.01;
   int nsteps = (tmax-tmin)/dt;
