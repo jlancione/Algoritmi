@@ -9,32 +9,33 @@ LDFLAGS = -lm
 
 double_pendulum: $(OBJ)
 	@$(CXX) $(OBJ) $(LDFLAGS) -o $@
-	@echo "\n\nINFO: Finished compiling\n\n"
+	@echo "\nINFO: Finished compiling"
 
 data: double_pendulum
+	@echo "\nINFO: Executing binary...\n"
 	@./double_pendulum
-	@echo "\n\nINFO: Data baked\n\n"
+	@echo "\nINFO: Data baked\n"
+
+double_pendulum.dat: data
 
 %.o: %.cpp
 	@$(CXX) $(CFLAGS) $(INCLUDE_DIRS) $<
 
-energy: double_pendulum
-	@./double_pendulum
+energy: double_pendulum.dat
 	@gnuplot energy.gp
-	@echo -e "\n\nINFO: Energy plot completed!\n\n"
+	@echo "INFO: Energy plot completed!\n"
 
-gif: double_pendulum
-	@./double_pendulum
-	@echo -e "INFO: Working on it..."
-	@gnuplot double_pendulum.gp
-	@echo -e "\n\nINFO: GIF completed!\n\n"
+gif: double_pendulum.dat
+	@echo "\nINFO: Working on it...\n"
+	@gnuplot double_pendulum.gp 2>/dev/null
+	@echo "\nINFO: GIF completed!\n"
 
 plots: energy, gif
 
 caos: double_pendulum.dat double_pendulum1.dat
-	@echo "\n\nINFO: Working on it...\n\n"
-	@gnuplot multi_pendulum.gp
-	@echo "\n\nINFO: GIF baked... Ready for CAOS!\n\n"
+	@echo "\nINFO: Working on it...\n"
+	@gnuplot multi_pendulum.gp 2>/dev/null
+	@echo "\nINFO: GIF baked... Ready for CAOS!\n"
 
 clean: 
 	@rm -f *.o 
