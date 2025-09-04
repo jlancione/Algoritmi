@@ -5,6 +5,7 @@
 *.dat
 *.o
 *.gif
+*.png
 makefile
 
 # Pollo
